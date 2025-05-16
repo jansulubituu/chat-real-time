@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
@@ -11,9 +12,12 @@ export const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const logoutBtnRef = useRef<HTMLButtonElement>(null);
   const logoutConfirmRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   
   // Check if user is on chat page
   const isOnChatPage = pathname.includes('/chat');
@@ -21,6 +25,7 @@ export const Header = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Handle logout confirmation dropdown
       if (
         logoutConfirmRef.current && 
         !logoutConfirmRef.current.contains(event.target as Node) &&
@@ -28,6 +33,16 @@ export const Header = () => {
         !logoutBtnRef.current.contains(event.target as Node)
       ) {
         setShowLogoutConfirm(false);
+      }
+      
+      // Handle user menu dropdown
+      if (
+        userMenuRef.current && 
+        !userMenuRef.current.contains(event.target as Node) &&
+        avatarRef.current &&
+        !avatarRef.current.contains(event.target as Node)
+      ) {
+        setShowUserMenu(false);
       }
     };
     
@@ -44,6 +59,11 @@ export const Header = () => {
     } catch (error) {
       console.error('Failed to logout:', error);
     }
+  };
+
+  const navigateToProfile = () => {
+    setShowUserMenu(false);
+    router.push('/profile');
   };
 
   return (
@@ -75,16 +95,66 @@ export const Header = () => {
                   </Button>
                 </Link>
               )}
+              
+              {/* User Avatar with Dropdown */}
               <div className="relative">
-                <button
-                  ref={logoutBtnRef}
-                  onClick={() => setShowLogoutConfirm(!showLogoutConfirm)}
-                  className="py-1.5 px-3 text-sm font-medium rounded-lg transition-colors bg-gray-200 text-red-600 hover:bg-red-50"
+                <div 
+                  ref={avatarRef}
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all"
                 >
-                  Sign Out
-                </button>
+                  {user.avatar ? (
+                    <Image 
+                      src={user.avatar} 
+                      alt={user.username}
+                      width={40} 
+                      height={40}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <span className="text-lg font-medium text-gray-600">
+                      {user.username?.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
                 
-                {/* Compact logout confirmation */}
+                {/* User Menu Dropdown */}
+                {showUserMenu && (
+                  <div
+                    ref={userMenuRef}
+                    className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg z-20 border border-gray-100 overflow-hidden"
+                  >
+                    <div className="py-1">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900 truncate">{user.username}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
+                      <button
+                        onClick={navigateToProfile}
+                        className="w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Profile
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setShowLogoutConfirm(true);
+                        }}
+                        className="w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-red-50 flex items-center"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Logout Confirmation */}
                 {showLogoutConfirm && (
                   <div 
                     ref={logoutConfirmRef}

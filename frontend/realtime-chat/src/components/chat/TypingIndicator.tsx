@@ -23,25 +23,30 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({ typingUsers })
   }
 
   return (
-    <div className="flex items-center px-4 py-2 text-xs text-gray-500">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className="flex items-center p-3 text-xs text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-sm max-w-[80%] border border-gray-100 dark:border-gray-700"
+    >
       <div className="flex space-x-1 mr-2">
         <motion.div
-          className="w-1.5 h-1.5 bg-gray-400 rounded-full"
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop', delay: 0 }}
+          className="w-2 h-2 bg-blue-500 rounded-full"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity, repeatType: 'loop', delay: 0, ease: "easeInOut" }}
         />
         <motion.div
-          className="w-1.5 h-1.5 bg-gray-400 rounded-full"
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop', delay: 0.2 }}
+          className="w-2 h-2 bg-blue-500 rounded-full"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity, repeatType: 'loop', delay: 0.2, ease: "easeInOut" }}
         />
         <motion.div
-          className="w-1.5 h-1.5 bg-gray-400 rounded-full"
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: 'loop', delay: 0.4 }}
+          className="w-2 h-2 bg-blue-500 rounded-full"
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 0.6, repeat: Infinity, repeatType: 'loop', delay: 0.4, ease: "easeInOut" }}
         />
       </div>
-      <span>{typingText}</span>
-    </div>
+      <span className="font-medium">{typingText}</span>
+    </motion.div>
   );
 };

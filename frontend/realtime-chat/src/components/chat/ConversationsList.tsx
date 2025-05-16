@@ -62,6 +62,7 @@ export const ConversationsList = ({ onConversationSelect }: ConversationsListPro
 
   // Handle conversation selection
   const handleSelectConversation = (conversation: Conversation) => {
+    console.log('Selecting conversation:', conversation._id);
     setActiveConversation(conversation);
     
     // Clear unread count when selecting a conversation

@@ -17,14 +17,30 @@ export default function ConversationLayout({
 
   // Set active conversation from URL parameter
   useEffect(() => {
-    const conversation = conversations.find(c => c._id === conversationId);
-    if (conversation) {
-      setActiveConversation(conversation);
-    } else if (conversations.length > 0 && conversationId) {
-      // Redirect to main chat page if conversation not found
-      router.replace('/chat');
+    if (!conversationId) return;
+    
+    // Check if we have conversations loaded
+    if (conversations.length > 0) {
+      const conversation = conversations.find(c => c._id === conversationId);
+      if (conversation) {
+        // Found the conversation, set it as active
+        setActiveConversation(conversation);
+      } else {
+        // Conversation not found, redirect to main chat
+        console.log('Conversation not found, redirecting to chat main page');
+        router.replace('/chat');
+      }
+    } else {
+      console.log('No conversations loaded yet, waiting for conversations data...');
     }
   }, [conversationId, conversations, setActiveConversation, router]);
+
+  // Debug logs for conversation loading
+  useEffect(() => {
+    console.log('Current conversations:', conversations.length);
+    console.log('Current conversationId param:', conversationId);
+    console.log('Current activeConversation:', activeConversation?._id || 'null');
+  }, [conversations, conversationId, activeConversation]);
 
   // Header component specific to conversation detail
   const ConversationHeader = () => {

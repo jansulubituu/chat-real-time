@@ -27,20 +27,23 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
       className={`flex w-full mb-2 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
     >
       {!isCurrentUser && showAvatar && (
         <div className="flex-shrink-0 mr-2">
           {message.sender.avatar ? (
-            <Image
-              src={message.sender.avatar}
-              alt={message.sender.username}
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm">
+              <Image
+                src={message.sender.avatar}
+                alt={message.sender.username}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium text-gray-700">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-sm font-medium text-white shadow-sm border-2 border-white dark:border-gray-800">
               {message.sender.username.charAt(0).toUpperCase()}
             </div>
           )}
@@ -49,14 +52,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       
       <div className={`flex flex-col max-w-[70%] ${isCurrentUser ? 'items-end' : 'items-start'}`}>
         {!isCurrentUser && showAvatar && (
-          <span className="text-xs text-gray-500 mb-1">{message.sender.username}</span>
+          <span className="text-xs text-gray-500 mb-1 font-medium">{message.sender.username}</span>
         )}
         
         <div
-          className={`px-3 py-2 rounded-lg break-words text-sm ${
+          className={`px-3 py-2 rounded-lg break-words text-sm shadow-sm ${
             isCurrentUser
-              ? 'bg-blue-600 text-white rounded-br-none'
-              : 'bg-gray-100 text-gray-800 rounded-bl-none'
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-none'
+              : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-100 dark:border-gray-700'
           }`}
         >
           {renderMessageContent(message)}
@@ -65,15 +68,16 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div className="flex items-center mt-1 text-xs text-gray-500">
           <span>{formattedTime}</span>
           
-          {isCurrentUser && isLast && (
+          {isCurrentUser && (
             <span className="ml-2">
               {isRead ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 7l-8 8-4-4" />
+                  <path d="M9 15l-4-4" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 7l-8 8-4-4" />
                 </svg>
               )}
             </span>
@@ -87,18 +91,21 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 const renderMessageContent = (message: Message) => {
   switch (message.contentType) {
     case 'text':
-      return <p>{message.content}</p>;
+      return <p className="whitespace-pre-wrap">{message.content}</p>;
     
     case 'image':
       return (
         <div className="relative">
-          <Image 
-            src={message.fileUrl || ''} 
-            alt="Image message" 
-            width={200} 
-            height={200} 
-            className="rounded-md max-w-full object-cover cursor-pointer"
-          />
+          <div className="relative rounded-md overflow-hidden" style={{ maxWidth: '240px', maxHeight: '320px' }}>
+            <Image 
+              src={message.fileUrl || ''} 
+              alt="Image message" 
+              width={240} 
+              height={240} 
+              className="object-contain rounded-md hover:opacity-95 transition-opacity cursor-pointer"
+              objectFit="contain"
+            />
+          </div>
         </div>
       );
     
@@ -108,16 +115,18 @@ const renderMessageContent = (message: Message) => {
           href={message.fileUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="flex items-center hover:underline text-blue-600"
+          className="flex items-center hover:underline text-blue-600 dark:text-blue-400 transition-colors"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clipRule="evenodd" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
-          {message.content || 'Download file'}
+          <span className="truncate">{message.content || 'Download file'}</span>
         </a>
       );
     
     default:
-      return <p>{message.content}</p>;
+      return <p className="whitespace-pre-wrap">{message.content}</p>;
   }
 };

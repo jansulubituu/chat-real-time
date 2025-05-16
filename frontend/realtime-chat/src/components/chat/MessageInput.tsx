@@ -21,6 +21,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Theo dõi trạng thái typing và thông báo cho server
   useEffect(() => {
@@ -54,7 +55,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
-      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`;
     }
   }, [message]);
   
@@ -85,9 +86,28 @@ export const MessageInput: React.FC<MessageInputProps> = ({
       // Focus lại vào input
       if (inputRef.current) {
         inputRef.current.focus();
+        inputRef.current.style.height = 'auto';
       }
     } catch (error) {
       console.error('Error sending message:', error);
+    }
+  };
+  
+  // Handle file attachment
+  const handleAttachmentClick = () => {
+    fileInputRef.current?.click();
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Here you would handle the file upload
+    console.log('File selected:', file);
+    
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
   
@@ -100,15 +120,33 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   };
   
   return (
-    <form onSubmit={handleSubmit} className="border-t py-2 px-4 bg-white">
+    <form onSubmit={handleSubmit} className="border-t py-3 px-4 bg-white dark:bg-gray-800">
       <div className="relative flex items-center">
+        <button
+          type="button"
+          onClick={handleAttachmentClick}
+          className="absolute left-3 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.48-8.48l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"></path>
+          </svg>
+        </button>
+        
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+          accept="image/*,audio/*,video/*,application/pdf"
+        />
+        
         <textarea
           ref={inputRef}
           value={message}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="flex-grow resize-none min-h-[40px] max-h-[120px] px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="flex-grow resize-none min-h-[40px] max-h-[120px] pl-10 pr-12 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 transition-all"
           rows={1}
           disabled={isLoadingSend}
         />
@@ -116,7 +154,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
         <motion.button
           whileTap={{ scale: 0.9 }}
           type="submit"
-          className="absolute right-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50"
+          className="absolute right-1.5 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-all disabled:opacity-50 disabled:hover:bg-blue-600"
           disabled={!message.trim() || isLoadingSend}
         >
           {isLoadingSend ? (
@@ -125,8 +163,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
           )}
         </motion.button>

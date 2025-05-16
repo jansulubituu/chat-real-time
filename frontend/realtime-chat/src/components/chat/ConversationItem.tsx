@@ -66,8 +66,10 @@ export const ConversationItem = ({
   return (
     <div
       className={`
-        flex items-center p-3 gap-3 rounded-lg cursor-pointer transition-colors
-        ${isActive ? "bg-primary/10 hover:bg-primary/15" : "hover:bg-gray-100 dark:hover:bg-gray-800"}
+        flex items-center p-3 gap-3 rounded-lg cursor-pointer transition-all duration-200
+        ${isActive 
+          ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 pl-2" 
+          : "hover:bg-gray-100 dark:hover:bg-gray-800/70"}
       `}
       onClick={onClick}
     >
@@ -75,18 +77,18 @@ export const ConversationItem = ({
       <div className="relative flex-shrink-0">
         {conversation.type === 'direct' ? (
           // Direct chat avatar
-        <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-          {displayInfo.avatar ? (
-            <img src={displayInfo.avatar} alt={displayInfo.name} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-lg font-semibold text-gray-600 dark:text-gray-300">
-              {displayInfo.initial}
-            </span>
-          )}
-        </div>
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700">
+            {displayInfo.avatar ? (
+              <img src={displayInfo.avatar} alt={displayInfo.name} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+                {displayInfo.initial}
+              </span>
+            )}
+          </div>
         ) : (
           // Group chat avatar
-          <div className="h-12 w-12 relative rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+          <div className="h-12 w-12 relative rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700">
             {displayInfo.avatar ? (
               // Use the group avatar if available
               <img src={displayInfo.avatar} alt={displayInfo.name} className="w-full h-full object-cover" />
@@ -131,7 +133,7 @@ export const ConversationItem = ({
         {/* Group indicator for group chats */}
         {conversation.type === 'group' && (
           <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center border-2 border-white dark:border-gray-900">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -144,7 +146,7 @@ export const ConversationItem = ({
       {/* Conversation info */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-center">
-          <h3 className="font-medium truncate">
+          <h3 className={`font-medium truncate ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`}>
             {displayInfo.name}
             {conversation.type === 'group' && (
               <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">({displayInfo.participantsCount})</span>
@@ -152,12 +154,16 @@ export const ConversationItem = ({
           </h3>
           <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{formattedTime}</span>
         </div>
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+        <div className="flex justify-between items-center mt-0.5">
+          <p className={`text-sm truncate ${
+            unreadCount > 0 
+              ? 'text-gray-800 dark:text-gray-200 font-medium'
+              : 'text-gray-500 dark:text-gray-400'
+          }`}>
             {lastMessage || 'No messages yet'}
           </p>
           {unreadCount > 0 && (
-            <div className="ml-2 bg-blue-500 text-white rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center text-xs font-medium flex-shrink-0">
+            <div className="ml-2 bg-blue-500 text-white rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center text-xs font-medium flex-shrink-0 shadow-sm">
               {unreadCount}
             </div>
           )}

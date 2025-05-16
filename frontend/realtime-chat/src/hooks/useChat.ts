@@ -64,16 +64,20 @@ export const useChat = (): ChatHook => {
   // Lấy tin nhắn khi chọn cuộc trò chuyện
   useEffect(() => {
     const fetchMessages = async () => {
+      // Reset messages when no active conversation
       if (!activeConversation) {
         setMessages([]);
+        console.log('No active conversation, messages reset to []');
         return;
       }
 
+      console.log('Fetching messages for conversation:', activeConversation._id);
       try {
         setLoadingMessages(true);
         setPage(1); // Reset page to 1
         const { messages: fetchedMessages, pages } = await messageApi.getMessages(activeConversation._id, 1);
-        setMessages(fetchedMessages);
+        console.log('Messages fetched:', fetchedMessages?.length || 0, 'messages');
+        setMessages(fetchedMessages || []); // Ensure we always have an array even if no messages
         setTotalPages(pages);
         
         // Đánh dấu tin nhắn đã đọc
@@ -86,8 +90,12 @@ export const useChat = (): ChatHook => {
       } catch (error) {
         console.error('Error fetching messages:', error);
         setError('Failed to load messages');
+        // Ensure we reset the messages array even on error
+        setMessages([]);
       } finally {
+        // Always finish loading, even if there was an error
         setLoadingMessages(false);
+        console.log('Loading messages complete');
       }
     };
 
@@ -346,6 +354,12 @@ export const useChat = (): ChatHook => {
     }
   }, [socket, isConnected]);
 
+  // Add console log to track when activeConversation is set
+  const setActiveConversationWithLog = useCallback((conversation: Conversation | null) => {
+    console.log('Setting active conversation:', conversation?._id || 'null');
+    setActiveConversation(conversation);
+  }, []);
+
   return {
     conversations,
     activeConversation,
@@ -357,7 +371,7 @@ export const useChat = (): ChatHook => {
     page,
     hasMore: page < totalPages,
     
-    setActiveConversation,
+    setActiveConversation: setActiveConversationWithLog,
     sendMessage,
     loadMoreMessages,
     markAsRead,

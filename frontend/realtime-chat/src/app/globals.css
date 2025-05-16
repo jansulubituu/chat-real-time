@@ -28,6 +28,108 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Custom scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 9999px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom prominent scrollbar for chat */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.6);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.8);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.6);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.8);
+}
+
+/* Custom scrollbar with Firefox support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79, 70, 229, 0.6) rgba(0, 0, 0, 0.05);
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: rgba(99, 102, 241, 0.6) rgba(255, 255, 255, 0.05);
+}
+
+/* More specific custom scrollbar styling */
+textarea.scrollbar-hidden::-webkit-scrollbar,
+input.scrollbar-hidden::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+textarea.scrollbar-hidden,
+input.scrollbar-hidden {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Allow scrollbar-hidden to override custom-scrollbar */
+.scrollbar-hidden.custom-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.scrollbar-hidden.custom-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
 @layer utilities {
   .perspective-1000 {
     perspective: 1000px;
@@ -143,4 +245,52 @@ body {
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+/* Always visible prominent scrollbar */
+.custom-scrollbar-always-visible::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.custom-scrollbar-always-visible::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar-always-visible::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.8);
+  border-radius: 7px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  min-height: 40px;
+}
+
+.custom-scrollbar-always-visible::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 1);
+}
+
+.dark .custom-scrollbar-always-visible::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .custom-scrollbar-always-visible::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.8);
+  border: 2px solid rgba(30, 30, 30, 0.8);
+}
+
+.dark .custom-scrollbar-always-visible::-webkit-scrollbar-thumb:hover {
+  background: rgba(67, 56, 202, 1);
+}
+
+/* Firefox support for always visible scrollbar */
+.custom-scrollbar-always-visible {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(59, 130, 246, 0.8) rgba(0, 0, 0, 0.1);
+}
+
+.dark .custom-scrollbar-always-visible {
+  scrollbar-color: rgba(79, 70, 229, 0.8) rgba(255, 255, 255, 0.1);
 }

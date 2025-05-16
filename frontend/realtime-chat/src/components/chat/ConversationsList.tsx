@@ -150,7 +150,7 @@ export const ConversationsList = ({ onConversationSelect }: ConversationsListPro
       </div>
 
       {/* Conversations list */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
         {loading ? (
           <div className="flex items-center justify-center h-32">
             <div className="h-6 w-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />

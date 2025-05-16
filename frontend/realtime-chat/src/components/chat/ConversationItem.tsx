@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { Conversation } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { motion } from 'framer-motion';
 
 interface ConversationItemProps {
   conversation: Conversation;
@@ -64,11 +65,13 @@ export const ConversationItem = ({
   }, [conversation.updatedAt]);
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
       className={`
         flex items-center p-3 gap-3 rounded-lg cursor-pointer transition-all duration-200
         ${isActive 
-          ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 pl-2" 
+          ? "bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 pl-2 shadow-sm" 
           : "hover:bg-gray-100 dark:hover:bg-gray-800/70"}
       `}
       onClick={onClick}
@@ -77,7 +80,10 @@ export const ConversationItem = ({
       <div className="relative flex-shrink-0">
         {conversation.type === 'direct' ? (
           // Direct chat avatar
-          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700">
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700"
+          >
             {displayInfo.avatar ? (
               <img src={displayInfo.avatar} alt={displayInfo.name} className="w-full h-full object-cover" />
             ) : (
@@ -85,10 +91,13 @@ export const ConversationItem = ({
                 {displayInfo.initial}
               </span>
             )}
-          </div>
+          </motion.div>
         ) : (
           // Group chat avatar
-          <div className="h-12 w-12 relative rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700">
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="h-12 w-12 relative rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 flex items-center justify-center overflow-hidden shadow-sm border border-white dark:border-gray-700"
+          >
             {displayInfo.avatar ? (
               // Use the group avatar if available
               <img src={displayInfo.avatar} alt={displayInfo.name} className="w-full h-full object-cover" />
@@ -117,12 +126,14 @@ export const ConversationItem = ({
                 ))}
               </div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Online status indicator for direct chats */}
         {conversation.type === 'direct' && (
-          <div 
+          <motion.div 
+            animate={displayInfo.status === 'online' ? { scale: [1, 1.15, 1] } : {}}
+            transition={{ repeat: displayInfo.status === 'online' ? Infinity : 0, repeatDelay: 3 }}
             className={`
               absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-gray-900
               ${displayInfo.status === 'online' ? "bg-green-500" : "bg-gray-300"}
@@ -163,13 +174,18 @@ export const ConversationItem = ({
             {lastMessage || 'No messages yet'}
           </p>
           {unreadCount > 0 && (
-            <div className="ml-2 bg-blue-500 text-white rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center text-xs font-medium flex-shrink-0 shadow-sm">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 15 }}
+              className="ml-2 bg-blue-500 text-white rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center text-xs font-medium flex-shrink-0 shadow-sm"
+            >
               {unreadCount}
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

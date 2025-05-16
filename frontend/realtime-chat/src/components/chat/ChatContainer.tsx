@@ -127,14 +127,14 @@ const ChatContainer = () => {
       {(!isMobileView || !showConversations) && (
         <div className="flex-1 flex flex-col h-full bg-white dark:bg-gray-800">
           {/* Chat header */}
-          <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center bg-white dark:bg-gray-800">
+          <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center bg-white dark:bg-gray-800 sticky top-0 z-10 shadow-sm">
             {isMobileView && (
               <button 
                 className="mr-3 text-blue-500 hover:text-blue-600 transition-colors"
                 onClick={() => setShowConversations(true)}
                 aria-label="Back to conversations"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
               </button>
@@ -174,19 +174,19 @@ const ChatContainer = () => {
                     />
                   )}
                 </div>
-                <div>
-                  <h2 className="font-semibold text-gray-800 dark:text-gray-100">
+                <div className="truncate">
+                  <h2 className="font-semibold text-gray-800 dark:text-gray-100 truncate">
                     {activeConversation.type === 'direct' 
                       ? activeConversation.participants.find(p => p._id !== user._id)?.username || 'Chat'
                       : activeConversation.name || 'Group Chat'}
                   </h2>
                   {activeConversation.type === 'group' && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                       {activeConversation.participants.length} participants
                     </p>
                   )}
                   {activeConversation.type === 'direct' && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                       {activeConversation.participants.find(p => p._id !== user._id)?.status === 'online' 
                         ? 'Online' 
                         : 'Offline'}
@@ -200,7 +200,7 @@ const ChatContainer = () => {
           {activeConversation ? (
             <>
               {/* Messages */}
-              <div className="flex-1 overflow-hidden bg-gray-50 dark:bg-gray-900">
+              <div className="flex-1 overflow-hidden bg-gray-50 dark:bg-gray-900 relative">
                 <MessageList 
                   messages={messages} 
                   currentUser={user}
@@ -213,7 +213,7 @@ const ChatContainer = () => {
               </div>
               
               {/* Message input */}
-              <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <div className="bg-white dark:bg-gray-800">
                 <MessageInput 
                   conversationId={activeConversation._id}
                   onSendMessage={handleSendMessage}

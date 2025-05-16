@@ -1,0 +1,6 @@
+Dòng thời gian phát triển:
+Tuần 1: Setup dự án và xây dựng các trang cơ bản (login/register)
+Tuần 2: Xây dựng giao diện chat và kết nối socket
+Tuần 3: Hoàn thiện các chức năng chat (gửi/nhận, typing, read receipts)
+Tuần 4: Thêm chức năng gửi file, hoàn thiện UI/UX
+Tuần 5: Kiểm thử và tối ưu

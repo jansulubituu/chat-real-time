@@ -175,7 +175,7 @@ export default function HomePage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 }}
                       className="flex justify-start"
-                    >
+          >
                       <div className="bg-gray-100 rounded-lg p-3 max-w-[70%]">
                         <p className="text-sm">Hi there! Welcome to our chat application.</p>
                       </div>

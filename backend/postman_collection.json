@@ -1,0 +1,1109 @@
+{
+	"info": {
+		"_postman_id": "58d45e1a-9b3d-4e5d-b7ee-7a0f283e0e02",
+		"name": "Chat Realtime API",
+		"description": "API para la aplicación de chat en tiempo real",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test_user\",\n    \"email\": \"test@example.com\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Đăng ký người dùng mới"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nguyenvana@gmail.com\",\n    \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Đăng nhập"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Lấy thông tin người dùng hiện tại"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Đăng xuất"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API xác thực người dùng"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Lấy danh sách tất cả người dùng"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						},
+						"description": "Lấy thông tin người dùng theo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"updated_username\",\n    \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Cập nhật thông tin người dùng"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"online\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"status"
+							]
+						},
+						"description": "Cập nhật trạng thái người dùng"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Xóa người dùng hiện tại"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API quản lý người dùng"
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nhóm mới\",\n    \"participants\": [\"{{user_id_2}}\", \"{{user_id_3}}\"],\n    \"type\": \"group\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/conversations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations"
+							]
+						},
+						"description": "Tạo cuộc trò chuyện mới"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conversations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations"
+							]
+						},
+						"description": "Lấy danh sách cuộc trò chuyện"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conversations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Lấy thông tin cuộc trò chuyện theo ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tên nhóm đã cập nhật\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/conversations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Cập nhật thông tin cuộc trò chuyện"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Participants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"participants\": [\"{{user_id_4}}\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/conversations/:id/participants",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								":id",
+								"participants"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Thêm người tham gia vào cuộc trò chuyện"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Participant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conversations/:id/participants/:userId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								":id",
+								"participants",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id_to_remove}}"
+								}
+							]
+						},
+						"description": "Xóa người tham gia khỏi cuộc trò chuyện"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Conversation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conversations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Xóa cuộc trò chuyện"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API quản lý cuộc trò chuyện"
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Send Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conversationId\": \"{{conversation_id}}\",\n    \"content\": \"Xin chào! Đây là tin nhắn mới.\",\n    \"contentType\": \"text\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/messages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"messages"
+							]
+						},
+						"description": "Gửi tin nhắn mới"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/messages/:conversationId?page=1&limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								":conversationId"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							],
+							"variable": [
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Lấy danh sách tin nhắn trong cuộc trò chuyện"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Messages as Read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/messages/:conversationId/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								":conversationId",
+								"read"
+							],
+							"variable": [
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Đánh dấu tin nhắn đã đọc"
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Nội dung tin nhắn đã được chỉnh sửa\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/messages/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{message_id}}"
+								}
+							]
+						},
+						"description": "Chỉnh sửa tin nhắn"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/messages/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"messages",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{message_id}}"
+								}
+							]
+						},
+						"description": "Xóa tin nhắn"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API quản lý tin nhắn"
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/search/users?query=nguyen",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"search",
+								"users"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "nguyen"
+								}
+							]
+						},
+						"description": "Tìm kiếm người dùng"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/search/messages?query=chào&conversationId={{conversation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"search",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "chào"
+								},
+								{
+									"key": "conversationId",
+									"value": "{{conversation_id}}"
+								}
+							]
+						},
+						"description": "Tìm kiếm tin nhắn"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Conversations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/search/conversations?query=nhóm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"search",
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "nhóm"
+								}
+							]
+						},
+						"description": "Tìm kiếm cuộc trò chuyện"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API tìm kiếm"
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "Upload Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/path/to/image.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/upload/image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"image"
+							]
+						},
+						"description": "Tải lên hình ảnh"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/path/to/file.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/upload/file",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"file"
+							]
+						},
+						"description": "Tải lên tệp"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/upload/:public_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								":public_id"
+							],
+							"variable": [
+								{
+									"key": "public_id",
+									"value": "{{file_public_id}}"
+								}
+							]
+						},
+						"description": "Xóa tệp đã tải lên"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API tải lên tệp"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id_2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id_3",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id_4",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "conversation_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "message_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id_to_remove",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "file_public_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 

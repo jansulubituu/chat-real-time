@@ -50,12 +50,14 @@ const createConversation = async (req, res) => {
 // @access  Private
 const getConversations = async (req, res) => {
   try {
+
+
     const conversations = await Conversation.find({
       participants: req.user._id,
     })
       .populate('participants', 'username avatar status')
       .sort({ updatedAt: -1 });
-    
+    console.log(req.user._id); //  new ObjectId('682655310fe0680255cd04ce')
     res.json(conversations);
   } catch (error) {
     console.error(error);

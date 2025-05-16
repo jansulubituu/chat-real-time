@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { AuthResponse, LoginCredentials, RegisterCredentials, Conversation, CreateConversationRequest, Message, SendMessageRequest, GetMessagesResponse, User } from './types';
 import { getLocalStorage, localStorageKeys } from './utils';
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082/api';
 

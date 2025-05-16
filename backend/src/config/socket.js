@@ -7,9 +7,10 @@ const connectedUsers = new Map();
 const configureSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: '*', // Trong production, nên giới hạn origin cụ thể
+      origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Sử dụng URL từ biến môi trường
       methods: ['GET', 'POST'],
-      credentials: true
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization']
     },
     pingTimeout: 60000 // 1 minute
   });

@@ -6,6 +6,9 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { getLocalStorage, localStorageKeys } from '@/lib/utils';
 import { toast } from 'react-hot-toast';
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 interface MessageInputProps {
   conversationId: string;

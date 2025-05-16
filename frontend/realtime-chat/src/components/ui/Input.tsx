@@ -32,3 +32,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
+
+// Add display name to satisfy ESLint
+Input.displayName = 'Input';

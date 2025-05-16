@@ -2,9 +2,13 @@
 
 import { io, Socket } from 'socket.io-client';
 import { getLocalStorage, localStorageKeys } from './utils';
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8082';
 
+
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+console.log("SOCKET_URL", SOCKET_URL);
 let socket: Socket | null = null;
 
 // Khởi tạo kết nối socket

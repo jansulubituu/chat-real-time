@@ -1,9 +1,10 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, AuthResponse, LoginCredentials, RegisterCredentials } from '@/lib/types';
+import { User, LoginCredentials, RegisterCredentials } from '@/lib/types';
 import { authApi } from '@/lib/api';
 import { getLocalStorage, setLocalStorage, removeLocalStorage, localStorageKeys } from '@/lib/utils';
+import axios from 'axios';
 
 interface AuthContextType {
   user: User | null;
@@ -54,8 +55,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(data);
       setLocalStorage(localStorageKeys.TOKEN, data.token);
       router.push('/chat');
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Login failed');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || 'Login failed');
+      } else {
+        setError('Login failed');
+      }
       throw error;
     } finally {
       setIsLoading(false);
@@ -71,8 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(data);
       setLocalStorage(localStorageKeys.TOKEN, data.token);
       router.push('/chat');
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Registration failed');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || 'Registration failed');
+      } else {
+        setError('Registration failed');
+      }
       throw error;
     } finally {
       setIsLoading(false);

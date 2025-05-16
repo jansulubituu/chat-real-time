@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
+import axios from 'axios';
 
 // Form validation schema
 const registerSchema = z.object({
@@ -44,8 +45,12 @@ export const RegisterForm = () => {
       setServerError(null);
       const { username, email, password } = data;
       await registerUser({ username, email, password });
-    } catch (error: any) {
-      setServerError(error.response?.data?.message || 'Registration failed. Please try again.');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setServerError(error.response?.data?.message || 'Registration failed. Please try again.');
+      } else {
+        setServerError('Registration failed. Please try again.');
+      }
     }
   };
 

@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
+import axios from 'axios';
 
 // Form validation schema
 const loginSchema = z.object({
@@ -36,8 +37,12 @@ export const LoginForm = () => {
     try {
       setServerError(null);
       await login(data);
-    } catch (error: any) {
-      setServerError(error.response?.data?.message || 'Login failed. Please try again.');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setServerError(error.response?.data?.message || 'Login failed. Please try again.');
+      } else {
+        setServerError('Login failed. Please try again.');
+      }
     }
   };
 

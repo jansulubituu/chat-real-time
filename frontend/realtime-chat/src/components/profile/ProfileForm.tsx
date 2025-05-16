@@ -12,7 +12,8 @@ import axios from 'axios';
 import { getLocalStorage } from '@/lib/utils';
 import { localStorageKeys } from '@/lib/utils';
 import { User } from '@/lib/types';
-
+import * as dotenv from "dotenv";
+dotenv.config();
 interface ProfileFormData {
   username: string;
   email: string;

@@ -56,6 +56,9 @@ export const Header = () => {
     try {
       await logout();
       router.push('/login');
+      console.log("Logout successfully");
+      router.refresh();
+     
     } catch (error) {
       console.error('Failed to logout:', error);
     }

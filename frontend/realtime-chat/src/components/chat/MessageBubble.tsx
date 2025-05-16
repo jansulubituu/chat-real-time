@@ -142,7 +142,7 @@ const renderMessageContent = (message: Message) => {
           href={message.fileUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="flex items-center hover:underline text-blue-600 dark:text-blue-400 transition-colors"
+          className="flex items-center hover:underline text-blue-100 dark:text-white transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />

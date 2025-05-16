@@ -3,6 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SendMessageRequest } from '@/lib/types';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { getLocalStorage, localStorageKeys } from '@/lib/utils';
+import { toast } from 'react-hot-toast';
 
 interface MessageInputProps {
   conversationId: string;
@@ -20,6 +23,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const [message, setMessage] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -82,17 +88,23 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!message.trim() || isLoadingSend) {
+    if ((!message.trim() && !selectedFile) || isLoadingSend || isUploading) {
       return;
     }
     
-    const messageData: SendMessageRequest = {
-      conversationId,
-      content: message.trim(),
-    };
-    
     try {
-      await onSendMessage(messageData);
+      if (selectedFile) {
+        await sendFileMessage();
+      } else {
+        const messageData: SendMessageRequest = {
+          conversationId,
+          content: message.trim(),
+          contentType: 'text'
+        };
+        
+        await onSendMessage(messageData);
+      }
+      
       setMessage('');
       
       // Reset typing status
@@ -115,6 +127,74 @@ export const MessageInput: React.FC<MessageInputProps> = ({
       });
     } catch (error) {
       console.error('Error sending message:', error);
+      toast.error('Failed to send message. Please try again.');
+    }
+  };
+  
+  // Upload file to the server
+  const uploadFile = async (file: File): Promise<string> => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082/api';
+    const token = getLocalStorage(localStorageKeys.TOKEN);
+    
+    const formData = new FormData();
+    
+    // Based on the API format, use a single endpoint for both image and file uploads
+    const endpoint = '/upload/file';
+    
+    // Add the file to the FormData with key 'file' (as shown in the Postman screenshot)
+    formData.append('file', file, file.name);
+    
+    try {
+      const response = await axios.post(`${API_URL}${endpoint}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      console.log('File upload response:', response.data);
+      
+      // The response contains url, filename, originalname, extension, mimeType, contentType
+      return response.data.url;
+    } catch (error) {
+      console.error('Error during file upload:', error);
+      throw error;
+    }
+  };
+  
+  // Send file message
+  const sendFileMessage = async () => {
+    if (!selectedFile) return;
+    
+    try {
+      setIsUploading(true);
+      
+      // Upload the file first
+      const fileUrl = await uploadFile(selectedFile);
+      
+      // Then send the message with the file URL
+      // Determine content type based on the file's mime type
+      let contentType: 'image' | 'file' = 'file';
+      if (selectedFile.type.startsWith('image/')) {
+        contentType = 'image';
+      }
+      
+      const messageData: SendMessageRequest = {
+        conversationId,
+        content: selectedFile.name,
+        contentType,
+        fileUrl
+      };
+      
+      await onSendMessage(messageData);
+      
+      // Clean up
+      resetFileSelection();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file. Please try again.');
+    } finally {
+      setIsUploading(false);
     }
   };
   
@@ -127,10 +207,25 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
     
-    // Here you would handle the file upload
-    console.log('File selected:', file);
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size exceeds 10MB limit');
+      return;
+    }
     
-    // Reset the input
+    setSelectedFile(file);
+    
+    // Create a preview URL for images
+    if (file.type.startsWith('image/')) {
+      const previewUrl = URL.createObjectURL(file);
+      setFilePreviewUrl(previewUrl);
+    }
+  };
+  
+  // Reset file selection
+  const resetFileSelection = () => {
+    setSelectedFile(null);
+    setFilePreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -159,8 +254,56 @@ export const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
   
+  // Get file size in readable format
+  const getFileSize = (size: number): string => {
+    return size < 1024 * 1024
+      ? `${(size / 1024).toFixed(1)} KB`
+      : `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  };
+  
   return (
     <form onSubmit={handleSubmit} className="border-t py-3 px-4 bg-white dark:bg-gray-800">
+      {/* Compact File Preview */}
+      {selectedFile && (
+        <div className="mb-2 px-2">
+          <div className="flex items-center p-2 bg-blue-50 dark:bg-gray-700 rounded-lg shadow-sm border border-blue-100 dark:border-gray-600 relative">
+            {filePreviewUrl && selectedFile.type.startsWith('image/') ? (
+              <div className="mr-3 relative h-14 w-14 rounded-md overflow-hidden border border-gray-200 dark:border-gray-600 bg-white">
+                <img 
+                  src={filePreviewUrl} 
+                  alt="Preview" 
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="mr-3 flex items-center justify-center h-14 w-14 rounded-md bg-blue-100 dark:bg-gray-600 text-blue-500 dark:text-blue-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                  <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+              </div>
+            )}
+            
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 dark:text-white truncate">{selectedFile.name}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{getFileSize(selectedFile.size)}</p>
+            </div>
+            
+            <button 
+              type="button"
+              onClick={resetFileSelection}
+              className="ml-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400"
+              title="Remove file"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+      
       <div className="relative flex items-center">
         {/* Attachment button */}
         <div className="absolute left-3 flex space-x-2">
@@ -168,6 +311,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             type="button"
             onClick={handleAttachmentClick}
             className="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors hover:scale-110 transform"
+            disabled={isLoadingSend || isUploading}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.48-8.48l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"></path>
@@ -179,6 +323,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             type="button" 
             onClick={handleEmojiClick}
             className="text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors hover:scale-110 transform"
+            disabled={isLoadingSend || isUploading}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -195,7 +340,8 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden"
-          accept="image/*,audio/*,video/*,application/pdf"
+          accept="image/*,audio/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+          disabled={isLoadingSend || isUploading}
         />
         
         {/* Emoji picker */}
@@ -227,10 +373,10 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           value={message}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message..."
+          placeholder={selectedFile ? "Add a message..." : "Type a message..."}
           className="flex-grow resize-none min-h-[40px] max-h-[120px] pl-20 pr-14 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 transition-all scrollbar-hidden"
           rows={1}
-          disabled={isLoadingSend}
+          disabled={isLoadingSend || isUploading}
         />
         
         {/* Send button */}
@@ -239,9 +385,9 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           whileHover={{ scale: 1.05, backgroundColor: '#2563eb' }}
           type="submit"
           className="absolute right-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-all disabled:opacity-50 disabled:hover:bg-blue-600 shadow-sm"
-          disabled={!message.trim() || isLoadingSend}
+          disabled={(!message.trim() && !selectedFile) || isLoadingSend || isUploading}
         >
-          {isLoadingSend ? (
+          {isLoadingSend || isUploading ? (
             <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

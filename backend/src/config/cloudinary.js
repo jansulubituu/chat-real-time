@@ -25,6 +25,14 @@ const fileStorage = new CloudinaryStorage({
   params: {
     folder: 'chat-app-files',
     resource_type: 'raw',
+    format: (req, file) => {
+      // Lấy đuôi file từ tên gốc
+      return file.originalname.split('.').pop();
+    },
+    public_id: (req, file) => {
+      // Tạo tên file (không có đuôi)
+      return file.originalname.split('.').slice(0, -1).join('.') + '_' + Date.now();
+    }
   }
 });
 
@@ -44,4 +52,4 @@ module.exports = {
   cloudinary,
   uploadImage,
   uploadFile
-}; 
+};

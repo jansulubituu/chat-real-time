@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -57,33 +56,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-indigo-50 to-white overflow-hidden">
-      {/* Header */}
-      <motion.header 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100 }}
-        className="w-full py-6 px-4 sm:px-6 lg:px-8 sticky top-0 z-10 backdrop-blur-lg bg-white/70"
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text"
-            >
-              Realtime Chat
-            </motion.div>
-          </div>
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <Link href="/login" className="hidden sm:block">
-              <Button variant="outline" size="sm" className="transition-all hover:scale-105">Sign In</Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm" className="transition-all hover:scale-105">Sign Up</Button>
-            </Link>
-          </div>
-        </div>
-      </motion.header>
-
       {/* Hero Section */}
       <main>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">

@@ -7,7 +7,7 @@ const connectedUsers = new Map();
 const configureSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: 'chat-real-time-gamma.vercel.app' || 'http://localhost:3000', // Sử dụng URL từ biến môi trường
+      origin: true, // Sử dụng URL từ biến môi trường
       methods: ['GET', 'POST'],
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization']

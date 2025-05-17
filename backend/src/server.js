@@ -18,7 +18,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'chat-real-time-gamma.vercel.app' || 'http://localhost:3000', // Thay đổi URL frontend của bạn
+  origin: true, // Cho phép tất cả các origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
